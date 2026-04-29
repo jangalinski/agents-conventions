@@ -88,3 +88,11 @@ Priorities:
 - Add new agent names only when you agree to them explicitly.
 - Add new priority levels only when you agree to them explicitly.
 - Keep shared conventions machine-readable and consistent with this template.
+
+### Workflow And Action Implementation
+
+When writing GitHub workflows or GitHub actions in this repository, prefer `bash` and `python` for the implementation language.
+
+- Use `bash` for thin wrappers and shell glue.
+- Use `python` for lightweight parsing and file operations.
+- Avoid introducing Ruby, JVM tooling, or other heavier languages unless explicitly requested.
