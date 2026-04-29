@@ -1,0 +1,14 @@
+site:
+  title: "Agents Conventions"
+
+server:
+  files:
+    dev:
+      contentRoot: "build/processedResources/js/main/public"
+      script: "build/kotlin-webpack/js/developmentExecutable/agents.js"
+      api: "build/libs/agents.jar"
+    prod:
+      script: "build/kotlin-webpack/js/productionExecutable/agents.js"
+      siteRoot: ".kobweb/site"
+
+  port: 8080

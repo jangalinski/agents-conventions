@@ -1,0 +1,1 @@
+The catalogue contains the ´AGENTS.md` file, `.junie/guidelines.md` and `.agents/**/.*.md` files already existing in different repositories. They can serve as an inspiration for what global instructions/conventions we should adopt and centralize in this `agents-conventsions` repository.

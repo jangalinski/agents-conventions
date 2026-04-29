@@ -1,0 +1,7 @@
+source:
+  owner: your-org
+  repo: agent-conventions
+  ref: main
+
+modules:
+  - conventions/kotlin/style.md
