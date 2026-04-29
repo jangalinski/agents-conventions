@@ -15,6 +15,23 @@ def run(cmd: list[str], *, check: bool = True, capture_output: bool = False, tex
     return subprocess.run(cmd, check=check, capture_output=capture_output, text=text)
 
 
+def create_pull_request(cmd: list[str]) -> None:
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode == 0:
+        return
+    stderr = (result.stderr or "").strip()
+    if "createPullRequest" in stderr or "not permitted to create or approve pull requests" in stderr:
+        message = (
+            "pull request creation was rejected by GitHub Actions permissions.\n"
+            "Enable 'Allow GitHub Actions to create and approve pull requests' for the repository or its organization,\n"
+            "or use a token with PR creation rights."
+        )
+        if stderr:
+            message = f"{message}\n\nOriginal error:\n{stderr}"
+        raise SystemExit(message)
+    raise subprocess.CalledProcessError(result.returncode, cmd, output=result.stdout, stderr=result.stderr)
+
+
 def parse_frontmatter(path: pathlib.Path) -> dict:
     # We only care about the YAML frontmatter block at the top of each convention file.
     content = path.read_text(encoding="utf-8")
@@ -142,7 +159,7 @@ pr_body = "\n".join(
 )
 
 # Open the pull request back to the consumer's default branch.
-run(
+create_pull_request(
     [
         "gh",
         "pr",
@@ -159,5 +176,4 @@ run(
         pr_body,
     ]
 )
-
 print(f"Created pull request for {branch_name} against {base_branch}")

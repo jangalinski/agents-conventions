@@ -24,4 +24,6 @@ The consuming workflow needs at least:
 - `pull-requests: write`
 
 The workflow should also provide `actions/checkout` for the consumer repository before invoking this action.
+GitHub Actions must be allowed to create pull requests in the consumer repo or organization, otherwise the final PR creation step will fail.
+If the repository-level toggle is greyed out, enable **Allow GitHub Actions to create and approve pull requests** at the organization level.
 The implementation logic lives in `scripts/import_shared_conventions.py`.
