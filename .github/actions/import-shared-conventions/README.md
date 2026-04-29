@@ -13,7 +13,8 @@ Read the consuming repo's `.agents/.shared.yml` or `.agents/.shared.yaml`, resol
 ```
 
 The consuming workflow should already check out the consumer repository before invoking the action.
-Omit `source_ref` to import from `main`. Set it only when you want to test a branch from this repository.
+To test a branch of this action repository, change the ref in `uses:` to that branch name.
+The optional `source_ref` input stays available for workflows that need to import from a different branch than the action ref itself.
 
 ## Workflow permissions
 
