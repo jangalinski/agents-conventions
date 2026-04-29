@@ -3,11 +3,14 @@ id: unique-id
 title: Title
 
 tags:
-  - kotlin
+  - github
 
-priority: SHOULD
+agents:
+  - codex
 
-references:
+prio: SHOULD
+
+refs:
   - title: Example
     url: https://example.com
     type: public-doc
