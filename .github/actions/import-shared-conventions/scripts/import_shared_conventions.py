@@ -97,6 +97,12 @@ for convention_id in ids:
         raise SystemExit(f"convention id not found in source repo: {convention_id}")
     selected_paths.append(source_path)
 
+general_path = source_by_id.get("general")
+if general_path is None:
+    raise SystemExit("required shared convention id not found in source repo: general")
+if general_path not in selected_paths:
+    selected_paths.insert(0, general_path)
+
 destination_root = workspace / destination_dir
 destination_root.mkdir(parents=True, exist_ok=True)
 expected_targets: set[pathlib.Path] = set()
@@ -155,6 +161,9 @@ pr_body = "\n".join(
         f"Config: `{config_file.name}`",
         "Selected ids:",
         *[f"- `{convention_id}`" for convention_id in ids],
+        "",
+        "Always included:",
+        "- `general`",
     ]
 )
 

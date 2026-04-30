@@ -10,15 +10,21 @@ This section is temporary memory for the current setup phase and can be removed 
 - The public README must stay high-level and should not mention `_setup/`.
 - The long-term goal is to centralize shared agent instructions, conventions, workflows, and reusable blocks for GitHub-based repos.
 - The current repo is intentionally Gradle/Kotlin-based so future docs or tooling can be added here if needed.
-- The first reusable GitHub-specific convention block lives at `.agents/conventions/github/gh-auth.md`.
+- The first reusable GitHub-specific convention block lives at `.agents/conventions/github-gh-auth-bootstrap.md`.
 
 ## How To Create Shared Conventions
 
-Use this section as the source of truth for all shared `.agents/**/*.md` conventions created in this repo.
+Use this section as the source of truth for all shared `.agents/**/*.md` conventions and shared instruction files created in this repo.
+
+- Treat every `.agents/**/*.md` file as part of the same catalogue.
+- Keep `.agents/` flat by default, and only add subdirectories when the number of files makes the layout harder to navigate.
+- Encode the primary scope in both the markdown file name and the `id` field.
+- Use tags for secondary classification, not for deciding the file path.
+- Consumers may have `.agents/shared/` plus other local `.agents/**/*.md` files; all of them should be considered together.
 
 ### Template
 
-Use the structure from [.agents/_templates/shared-agent-instruction.md](/Users/jangalinski/IdeaProjects/jangalinski/agents-conventions/.agents/_templates/shared-agent-instruction.md) as the baseline and extend it with the `agents:` frontmatter field.
+Use the structure from [.agents/_templates/shared-agent-instruction.md](.agents/_templates/shared-agent-instruction.md) as the baseline and extend it with the `agents:` frontmatter field.
 
 Required frontmatter:
 
@@ -65,29 +71,10 @@ status: active
 - `prio` describes how strongly the convention should be followed.
 - `refs` point to supporting documentation or source material.
 
-### Current Allowed Values
+### Catalogue Policy
 
-Tags:
-
-- `github`
-- `gh`
-- `auth`
-- `ci`
-
-Agents:
-
-- `codex`
-
-Priorities:
-
-- `SHOULD`
-
-### Change Control
-
-- Add new tags only when you agree to them explicitly.
-- Add new agent names only when you agree to them explicitly.
-- Add new priority levels only when you agree to them explicitly.
-- Keep shared conventions machine-readable and consistent with this template.
+Use [.agents/conventions/general.md](.agents/conventions/general.md) as the human-readable source of truth for catalogue policy.
+Use [.agents/.catalog.yml](.agents/.catalog.yml) as the machine-readable list of allowed tags, agents, and priorities.
 
 ### Workflow And Action Implementation
 

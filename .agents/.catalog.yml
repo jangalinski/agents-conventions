@@ -1,0 +1,40 @@
+version: 1
+
+allowed:
+  tags:
+    - id: general
+      description: Cross-cutting convention guidance and catalogue policy.
+    - id: convention
+      description: Rules about conventions, their structure, and how to use them.
+    - id: code
+      description: Source-code conventions and code-shape rules.
+    - id: style
+      description: Stylistic guidance that affects how code or docs should look.
+    - id: format
+      description: Whitespace, indentation, and formatting rules.
+    - id: github
+      description: GitHub platform, repository, PR, issue, and workflow topics.
+    - id: gh
+      description: GitHub CLI usage and automation.
+    - id: auth
+      description: Authentication and bootstrap concerns.
+    - id: ci
+      description: Continuous integration and workflow automation.
+    - id: kotlin
+      description: Kotlin language conventions and Kotlin-specific code organization.
+
+  agents:
+    - id: all
+      description: Applies to every agent family.
+    - id: codex
+      description: Applies to Codex agents in this repository.
+
+  prios:
+    - id: MUST
+      description: Mandatory, follow unless the convention explicitly narrows the scope.
+    - id: SHOULD
+      description: Expected by default, deviate only with a reason.
+    - id: COULD
+      description: Optional guidance that is useful but not required.
+    - id: WONT
+      description: Intentionally out of scope for the current convention or timebox.

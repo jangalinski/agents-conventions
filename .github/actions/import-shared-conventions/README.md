@@ -4,7 +4,7 @@ Composite GitHub Action for consuming repositories.
 
 ## Purpose
 
-Read the consuming repo's `.agents/.shared.yml` or `.agents/.shared.yaml`, resolve the listed convention `id`s from this repository, copy the matching markdown files into `.agents/shared/<id>.md`, push a feature branch, and open a pull request.
+Read the consuming repo's `.agents/.shared.yml` or `.agents/.shared.yaml`, resolve the listed convention `id`s from this repository, copy the matching markdown files into `.agents/shared/<id>.md`, always include `general.md`, push a feature branch, and open a pull request.
 
 ## Usage
 
