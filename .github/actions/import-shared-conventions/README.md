@@ -4,7 +4,7 @@ Composite GitHub Action for consuming repositories.
 
 ## Purpose
 
-Read the consuming repo's `.agents/.shared.yml` or `.agents/.shared.yaml`, resolve the listed convention `id`s from this repository, copy the matching markdown files into `.agents/shared/<id>.md`, always include `general.md`, push a feature branch, and open a pull request.
+Read the consuming repo's `.agents/.shared.yml` or `.agents/.shared.yaml`, resolve the listed convention `id`s from this repository, copy the matching markdown files into `.agents/shared/<id>.md`, always include `general.md`, push to a configurable stable branch, and open or update a pull request on that branch.
 
 ## Usage
 
@@ -15,6 +15,7 @@ Read the consuming repo's `.agents/.shared.yml` or `.agents/.shared.yaml`, resol
 The consuming workflow should already check out the consumer repository before invoking the action.
 To test a branch of this action repository, change the ref in `uses:` to that branch name.
 The optional `source_ref` input stays available for workflows that need to import from a different branch than the action ref itself.
+The optional `branch_name` input controls the stable branch used for imports and defaults to `shared-conventions/import`.
 
 ## Workflow permissions
 

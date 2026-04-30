@@ -14,8 +14,8 @@ inputs:
     description: "Directory in the consuming repository where shared conventions are copied."
     required: false
     default: .agents/shared
-  branch_prefix:
-    description: "Feature branch prefix used for the import commit."
+  branch_name:
+    description: "Stable feature branch name used for the import sync."
     required: false
     default: shared-conventions/import
   commit_message:
@@ -47,7 +47,7 @@ runs:
         SOURCE_REF: ${{ inputs.source_ref }}
         CONFIG_PATH: ${{ inputs.config_path }}
         DESTINATION_DIR: ${{ inputs.destination_dir }}
-        BRANCH_PREFIX: ${{ inputs.branch_prefix }}
+        BRANCH_NAME: ${{ inputs.branch_name }}
         COMMIT_MESSAGE: ${{ inputs.commit_message }}
         PR_TITLE: ${{ inputs.pr_title }}
         SOURCE_DIR: ${{ github.workspace }}/.shared-conventions-source

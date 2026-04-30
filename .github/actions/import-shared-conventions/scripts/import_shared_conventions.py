@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import datetime as dt
+import json
 import os
 import pathlib
 import shutil
@@ -32,6 +32,32 @@ def create_pull_request(cmd: list[str]) -> None:
     raise subprocess.CalledProcessError(result.returncode, cmd, output=result.stdout, stderr=result.stderr)
 
 
+def get_open_pull_request_number(repo: str, head_branch: str) -> int | None:
+    result = subprocess.run(
+        [
+            "gh",
+            "pr",
+            "list",
+            "--repo",
+            repo,
+            "--head",
+            head_branch,
+            "--state",
+            "open",
+            "--json",
+            "number",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(result.returncode, result.args, output=result.stdout, stderr=result.stderr)
+    prs = json.loads(result.stdout or "[]")
+    if not prs:
+        return None
+    return int(prs[0]["number"])
+
+
 def parse_frontmatter(path: pathlib.Path) -> dict:
     # We only care about the YAML frontmatter block at the top of each convention file.
     content = path.read_text(encoding="utf-8")
@@ -50,7 +76,7 @@ source_ref = os.environ["SOURCE_REF"]
 repository = os.environ["REPOSITORY"]
 config_path = os.environ["CONFIG_PATH"]
 destination_dir = os.environ["DESTINATION_DIR"]
-branch_prefix = os.environ["BRANCH_PREFIX"]
+branch_name = os.environ["BRANCH_NAME"]
 commit_message = os.environ["COMMIT_MESSAGE"]
 pr_title = os.environ["PR_TITLE"]
 source_dir = pathlib.Path(os.environ["SOURCE_DIR"])
@@ -126,14 +152,11 @@ if not status:
     print("No shared convention changes detected. Nothing to commit.")
     raise SystemExit(0)
 
-branch_suffix = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d%H%M%S")
-branch_name = f"{branch_prefix}-{branch_suffix}"
-
 remote_show = run(["git", "-C", str(workspace), "remote", "show", "origin"], capture_output=True).stdout
 base_branch = next((line.split(":", 1)[1].strip() for line in remote_show.splitlines() if line.startswith("  HEAD branch:")), "main") or "main"
 
-# Create the feature branch, stage the imported files, and commit them with a bot identity.
-run(["git", "-C", str(workspace), "checkout", "-b", branch_name])
+# Create or reset the feature branch, stage the imported files, and commit them with a bot identity.
+run(["git", "-C", str(workspace), "checkout", "-B", branch_name])
 run(["git", "-C", str(workspace), "config", "user.name", "github-actions[bot]"])
 run(["git", "-C", str(workspace), "config", "user.email", "github-actions[bot]@users.noreply.github.com"])
 run(["git", "-C", str(workspace), "add", destination_dir])
@@ -152,7 +175,7 @@ run(
         f"https://x-access-token:{gh_token}@github.com/{repository}.git",
     ]
 )
-run(["git", "-C", str(workspace), "push", "-u", "origin", branch_name])
+run(["git", "-C", str(workspace), "push", "-u", "--force", "origin", branch_name])
 
 pr_body = "\n".join(
     [
@@ -167,22 +190,40 @@ pr_body = "\n".join(
     ]
 )
 
-# Open the pull request back to the consumer's default branch.
-create_pull_request(
-    [
-        "gh",
-        "pr",
-        "create",
-        "--base",
-        base_branch,
-        "--head",
-        branch_name,
-        "--repo",
-        repository,
-        "--title",
-        pr_title,
-        "--body",
-        pr_body,
-    ]
-)
-print(f"Created pull request for {branch_name} against {base_branch}")
+open_pr_number = get_open_pull_request_number(repository, branch_name)
+if open_pr_number is None:
+    # Open the pull request back to the consumer's default branch.
+    create_pull_request(
+        [
+            "gh",
+            "pr",
+            "create",
+            "--base",
+            base_branch,
+            "--head",
+            branch_name,
+            "--repo",
+            repository,
+            "--title",
+            pr_title,
+            "--body",
+            pr_body,
+        ]
+    )
+    print(f"Created pull request for {branch_name} against {base_branch}")
+else:
+    run(
+        [
+            "gh",
+            "pr",
+            "edit",
+            str(open_pr_number),
+            "--repo",
+            repository,
+            "--title",
+            pr_title,
+            "--body",
+            pr_body,
+        ]
+    )
+    print(f"Updated pull request #{open_pr_number} for {branch_name}")
