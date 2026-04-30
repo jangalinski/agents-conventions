@@ -4,14 +4,14 @@ allowed:
   tags:
     - id: general
       description: Cross-cutting convention guidance and catalogue policy.
-    - id: convention
-      description: Rules about conventions, their structure, and how to use them.
     - id: code
       description: Source-code conventions and code-shape rules.
     - id: style
       description: Stylistic guidance that affects how code or docs should look.
     - id: format
       description: Whitespace, indentation, and formatting rules.
+    - id: project
+      description: Project structure, module layout, and repository organization.
     - id: github
       description: GitHub platform, repository, PR, issue, and workflow topics.
     - id: gh
@@ -24,6 +24,8 @@ allowed:
       description: Continuous integration and workflow automation.
     - id: kotlin
       description: Kotlin language conventions and Kotlin-specific code organization.
+    - id: kobweb
+      description: Kobweb project structure, routing, and frontend conventions.
 
   agents:
     - id: all
