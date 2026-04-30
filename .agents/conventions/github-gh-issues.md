@@ -55,7 +55,7 @@ Then the result is "4"
 
 ## Details
 
-- Use the template sections `Desired behavior`, `Current behavior`, `Hint`, `Scope`, and `Acceptance criterias` when they are available.
+- Use the template sections `Desired behavior`, `Current behavior`, `Hint`, `Scope`, and `Acceptance criteria` when they are available.
 - Keep `desired` focused on the end state.
 - Keep `current` focused on the present behavior or gap.
 - Use `hint` for implementation ideas, constraints, or links.

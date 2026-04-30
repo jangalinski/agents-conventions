@@ -18,5 +18,5 @@ labels:
 ## Scope
 <!-- Which files, workflows, or conventions are affected? -->
 
-## Acceptance criterias
+## Acceptance criteria
 <!-- What must be true for this issue to be done? -->
