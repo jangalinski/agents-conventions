@@ -1,3 +1,6 @@
 ids:
   - github-gh-auth-bootstrap
   - editorconfig-formatting
+tags:
+  - github
+  - kotlin

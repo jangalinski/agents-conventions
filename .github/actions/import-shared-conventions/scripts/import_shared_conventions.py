@@ -93,17 +93,18 @@ if config_file is None:
     print(f"No shared config file found at {config_candidates[0]}. Skipping import.")
     raise SystemExit(0)
 
-# The consumer config stays deliberately small for the first iteration: just a list of ids.
 shared_config = yaml.safe_load(config_file.read_text(encoding="utf-8")) or {}
-ids = [str(item).strip() for item in shared_config.get("ids", []) if str(item).strip()]
-if not ids:
-    raise SystemExit(f"no ids configured in {config_file}")
+selected_ids = [str(item).strip() for item in shared_config.get("ids", []) if str(item).strip()]
+selected_tags = [str(item).strip() for item in shared_config.get("tags", []) if str(item).strip()]
+if not selected_ids and not selected_tags:
+    raise SystemExit(f"no ids or tags configured in {config_file}")
 
 source_conventions_dir = source_dir / ".agents" / "conventions"
 if not source_conventions_dir.is_dir():
     raise SystemExit(f"source conventions directory not found: {source_conventions_dir}")
 
 source_by_id: dict[str, pathlib.Path] = {}
+source_by_tag: dict[str, list[pathlib.Path]] = {}
 # Build an index so we can resolve ids to source files quickly and detect duplicates early.
 for path in sorted(source_conventions_dir.rglob("*.md")):
     frontmatter = parse_frontmatter(path)
@@ -115,13 +116,48 @@ for path in sorted(source_conventions_dir.rglob("*.md")):
             f"duplicate convention id {convention_id} in {source_by_id[convention_id]} and {path}"
         )
     source_by_id[convention_id] = path
+    for tag in frontmatter.get("tags", []) or []:
+        tag_name = str(tag).strip()
+        if not tag_name:
+            continue
+        source_by_tag.setdefault(tag_name, []).append(path)
 
-selected_paths = []
-for convention_id in ids:
+unknown_ids = [convention_id for convention_id in selected_ids if convention_id not in source_by_id]
+if unknown_ids:
+    allowed_ids = ", ".join(sorted(source_by_id))
+    raise SystemExit(
+        "unknown convention ids in selector file: "
+        f"{', '.join(unknown_ids)}\n"
+        f"Allowed ids: {allowed_ids}"
+    )
+
+unknown_tags = [tag_name for tag_name in selected_tags if tag_name not in source_by_tag]
+if unknown_tags:
+    allowed_tags = ", ".join(sorted(source_by_tag))
+    raise SystemExit(
+        "unknown convention tags in selector file: "
+        f"{', '.join(unknown_tags)}\n"
+        f"Allowed tags: {allowed_tags}"
+    )
+
+selected_paths: list[pathlib.Path] = []
+selected_ids_seen: set[str] = set()
+
+for convention_id in selected_ids:
     source_path = source_by_id.get(convention_id)
     if source_path is None:
         raise SystemExit(f"convention id not found in source repo: {convention_id}")
-    selected_paths.append(source_path)
+    if convention_id not in selected_ids_seen:
+        selected_paths.append(source_path)
+        selected_ids_seen.add(convention_id)
+
+for tag_name in selected_tags:
+    for source_path in source_by_tag[tag_name]:
+        frontmatter = parse_frontmatter(source_path)
+        convention_id = str(frontmatter.get("id", "")).strip()
+        if convention_id and convention_id not in selected_ids_seen:
+            selected_paths.append(source_path)
+            selected_ids_seen.add(convention_id)
 
 general_path = source_by_id.get("general")
 if general_path is None:
@@ -183,7 +219,10 @@ pr_body = "\n".join(
         "",
         f"Config: `{config_file.name}`",
         "Selected ids:",
-        *[f"- `{convention_id}`" for convention_id in ids],
+        *[f"- `{convention_id}`" for convention_id in selected_ids],
+        "",
+        "Selected tags:",
+        *[f"- `{tag_name}`" for tag_name in selected_tags],
         "",
         "Always included:",
         "- `general`",

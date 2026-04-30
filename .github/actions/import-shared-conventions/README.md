@@ -4,7 +4,7 @@ Composite GitHub Action for consuming repositories.
 
 ## Purpose
 
-Read the consuming repo's `.agents/.shared.yml` or `.agents/.shared.yaml`, resolve the listed convention `id`s from this repository, copy the matching markdown files into `.agents/shared/<id>.md`, always include `general.md`, push to a configurable stable branch, and open or update a pull request on that branch.
+Read the consuming repo's `.agents/.shared.yml` or `.agents/.shared.yaml`, resolve the listed convention `id`s and `tags` from this repository, copy the matching markdown files into `.agents/shared/<id>.md`, always include `general.md`, push to a configurable stable branch, and open or update a pull request on that branch.
 
 ## Usage
 
@@ -28,3 +28,18 @@ The workflow should also provide `actions/checkout` for the consumer repository 
 GitHub Actions must be allowed to create pull requests in the consumer repo or organization, otherwise the final PR creation step will fail.
 If the repository-level toggle is greyed out, enable **Allow GitHub Actions to create and approve pull requests** at the organization level.
 The implementation logic lives in `scripts/import_shared_conventions.py`.
+
+## Selector format
+
+The consumer selector file may include either or both of these keys:
+
+```yaml
+ids:
+  - github-gh-auth-bootstrap
+  - editorconfig-formatting
+tags:
+  - github
+  - kotlin
+```
+
+Selectors are resolved against the shared convention frontmatter in this repository. Any shared convention matching one of the selected tags is imported, along with any explicitly listed ids that are not already covered by a tag match. `general.md` is always included.
