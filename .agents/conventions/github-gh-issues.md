@@ -39,13 +39,15 @@ All agents SHOULD respect repository issue templates when they are available and
 
 ## Acceptance Criteria
 
-- Write acceptance criteria in Gherkin `Given / When / Then` form.
-- Keep the scenario minimal and concrete.
-- Make the expected result observable.
+- Write acceptance criteria as a set of one or more fenced Gherkin code blocks.
+- Keep each acceptance criterion in exactly one code block with its own `Given / When / Then` flow.
+- Allow a single `#` comment line immediately above `Given` to describe the criterion in plain language.
+- Keep each scenario minimal, concrete, and observable.
 
 ### Example
 
 ```gherkin
+# A trivial calculation should return the sum.
 Given a calculator with input "2 + 2"
 When the expression is evaluated
 Then the result is "4"
