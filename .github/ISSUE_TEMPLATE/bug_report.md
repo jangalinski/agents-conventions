@@ -2,20 +2,21 @@
 name: Bug report
 about: Report a problem with conventions, docs, or automation
 title: "[bug] "
-labels: bug
+labels:
+  - Type:Bug
 ---
 
-## desired
+## Desired behavior
 <!-- What should happen instead? -->
 
-## current
+## Current behavior
 <!-- What is happening right now? -->
 
-## hint
+## Hint
 <!-- Optional clues, logs, screenshots, or related links -->
 
-## scope
+## Scope
 <!-- Which files, workflows, or conventions are affected? -->
 
-## acceptance
+## Acceptance criterias
 <!-- What must be true for this issue to be done? -->

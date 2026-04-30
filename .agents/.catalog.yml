@@ -16,6 +16,8 @@ allowed:
       description: GitHub platform, repository, PR, issue, and workflow topics.
     - id: gh
       description: GitHub CLI usage and automation.
+    - id: issue
+      description: GitHub issue templates, triage, and issue-writing conventions.
     - id: auth
       description: Authentication and bootstrap concerns.
     - id: ci

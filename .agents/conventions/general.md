@@ -48,6 +48,7 @@ Use this convention to read, interpret, and apply all files under `.agents/**/*.
 - `format`: whitespace, indentation, and formatting rules.
 - `github`: GitHub platform, repository, PR, issue, and workflow topics.
 - `gh`: GitHub CLI usage and automation.
+- `issue`: GitHub issue templates, triage, and issue-writing conventions.
 - `auth`: authentication and bootstrap concerns.
 - `ci`: continuous integration and workflow automation.
 - `kotlin`: Kotlin language conventions and Kotlin-specific code organization.
