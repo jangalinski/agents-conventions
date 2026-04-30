@@ -4,7 +4,7 @@ Composite GitHub Action for consuming repositories.
 
 ## Purpose
 
-Read the consuming repo's `.agents/.shared.yml` or `.agents/.shared.yaml`, resolve the listed convention `id`s and `tags` from this repository, copy the matching markdown files into `.agents/shared/<id>.md`, always include `general.md`, push to a configurable stable branch, and open or update a pull request on that branch.
+Read the consuming repo's `.agents/.shared.yml` or `.agents/.shared.yaml`, resolve the listed convention `id`s and `tags` from this repository, copy the matching markdown files into `.agents/shared/<id>.md`, always include every convention tagged `general`, push to a configurable stable branch, and open or update a pull request on that branch.
 
 ## Usage
 
@@ -42,4 +42,4 @@ tags:
   - kotlin
 ```
 
-Selectors are resolved against the shared convention frontmatter in this repository. Any shared convention matching one of the selected tags is imported, along with any explicitly listed ids that are not already covered by a tag match. `general.md` is always included.
+Selectors are resolved against the shared convention frontmatter in this repository. Any shared convention matching one of the selected tags is imported, along with any explicitly listed ids that are not already covered by a tag match. All shared conventions tagged `general` are always included.

@@ -143,27 +143,32 @@ if unknown_tags:
 selected_paths: list[pathlib.Path] = []
 selected_ids_seen: set[str] = set()
 
+def add_selected_path(source_path: pathlib.Path) -> None:
+    frontmatter = parse_frontmatter(source_path)
+    convention_id = str(frontmatter.get("id", "")).strip()
+    if convention_id and convention_id not in selected_ids_seen:
+        selected_paths.append(source_path)
+        selected_ids_seen.add(convention_id)
+
 for convention_id in selected_ids:
     source_path = source_by_id.get(convention_id)
     if source_path is None:
         raise SystemExit(f"convention id not found in source repo: {convention_id}")
-    if convention_id not in selected_ids_seen:
-        selected_paths.append(source_path)
-        selected_ids_seen.add(convention_id)
+    add_selected_path(source_path)
 
 for tag_name in selected_tags:
     for source_path in source_by_tag[tag_name]:
-        frontmatter = parse_frontmatter(source_path)
-        convention_id = str(frontmatter.get("id", "")).strip()
-        if convention_id and convention_id not in selected_ids_seen:
-            selected_paths.append(source_path)
-            selected_ids_seen.add(convention_id)
+        add_selected_path(source_path)
 
-general_path = source_by_id.get("general")
-if general_path is None:
-    raise SystemExit("required shared convention id not found in source repo: general")
-if general_path not in selected_paths:
-    selected_paths.insert(0, general_path)
+general_paths = source_by_tag.get("general", [])
+if not general_paths:
+    raise SystemExit("required shared convention tag not found in source repo: general")
+for general_path in reversed(general_paths):
+    frontmatter = parse_frontmatter(general_path)
+    general_id = str(frontmatter.get("id", "")).strip()
+    if general_id and general_id not in selected_ids_seen:
+        selected_paths.insert(0, general_path)
+        selected_ids_seen.add(general_id)
 
 destination_root = workspace / destination_dir
 destination_root.mkdir(parents=True, exist_ok=True)
@@ -225,7 +230,7 @@ pr_body = "\n".join(
         *[f"- `{tag_name}`" for tag_name in selected_tags],
         "",
         "Always included:",
-        "- `general`",
+        "- conventions tagged `general`",
     ]
 )
 
